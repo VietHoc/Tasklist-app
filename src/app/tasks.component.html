@@ -1,0 +1,44 @@
+<div class="container">
+  <div class="row">
+    <div class="tasklist col-md-6">
+      <h3 class="text-center">Tasks</h3>
+      <div>
+        <input class="form-control" placeholder="What need to be done?" autofocus=""
+              [(ngModel)]="newTask.title" (keyup.enter)="addTask()">
+        <button (click)=" markAllDone()" class="btn btn-success btn-mark-all-done">Mark all as done</button>
+      </div>
+
+      <section *ngIf="tasks.length > 0">
+        <ul class="tasks">
+          <li *ngFor="let task of tasks" (click)="toggleTaskComplete(task)" class="ui-state-default">
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" value="" />{{ task.title }}</label>
+            </div>
+          </li>
+        </ul>
+      </section>
+      <section *ngIf="tasks.length == 0">
+        You've completed task list.
+      </section>
+
+      <footer class="task-footer" *ngIf="tasks.length > 0">
+        <strong> {{ tasks.length }} </strong> {{tasks.length == 1 ? 'item' : 'items'}} left
+      </footer>
+    </div>
+
+    <div class="donelist col-md-6">
+      <h3 class="text-center">Already done</h3>
+      <section *ngIf="dones.length > 0">
+        <ul class="done-list">
+          <li *ngFor="let done of dones" (click)="removeTask(done)" class="ui-state-default">
+            {{ done.title }}
+            <button class="remove-item btn btn-default btn-xs pull-right">
+              <span class="glyphicon glyphicon-remove"></span>
+            </button>
+          </li>
+        </ul>
+      </section>
+    </div>
+  </div>
+</div>
