@@ -1,14 +1,21 @@
 import { Injectable } from '@angular/core';
-import { Tasks } from './tasks';
-
+import { Tasks } from '../models/tasks.model';
 @Injectable()
 export class TasksService {
 
   tasks: Tasks[] = [
-    { id: 0, title: "Take out the trash", complete: false},
-    { id: 1, title: "Buy bread", complete: false},
-    { id: 2, title: "Teach penguins to fly", complete: false},
-    { id: 3, title: "Go market", complete: true}, 
+    { list_id: 0, id: 0, title: "Take out the trash", complete: false},
+    { list_id: 0, id: 1, title: "Buy bread", complete: false},
+    { list_id: 0, id: 2, title: "Teach penguins to fly", complete: false},
+    { list_id: 0, id: 3, title: "Go market", complete: true}, 
+    { list_id: 1, id: 4, title: "Take out the trash", complete: false},
+    { list_id: 1, id: 5, title: "Buy bread", complete: false},
+    { list_id: 1, id: 6, title: "Teach penguins to fly", complete: false},
+    { list_id: 2, id: 7, title: "Go market", complete: true}, 
+    { list_id: 2, id: 8, title: "Take out the trash", complete: false},
+    { list_id: 3, id: 9, title: "Buy bread", complete: false},
+    { list_id: 3, id: 10, title: "Teach penguins to fly", complete: false},
+    { list_id: 3, id: 11, title: "Go market", complete: true}, 
   ];
 
   lastId: number = this.tasks.length - 1;
@@ -42,8 +49,9 @@ export class TasksService {
   }
 
   // Simulate GET /tasks
-  getAllTasks(): Tasks[] {
-    return this.tasks;
+  getAllTasksByListId(list_id: number): Tasks[] {
+    return this.tasks
+                  .filter(task => task.list_id === list_id);
   }
 
   // Simulate GET /tasks/:id

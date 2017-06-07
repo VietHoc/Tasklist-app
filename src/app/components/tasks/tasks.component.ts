@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { Tasks } from './tasks';
-import { TasksService } from './tasks.service';
+import { Tasks } from '../../models/tasks.model';
+import { TasksService } from '../../services/tasks.service';
+import { 
+  Router,
+  ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'tasks',
@@ -11,16 +14,18 @@ import { TasksService } from './tasks.service';
 export class TasksComponent implements OnInit {
 
   newTask: Tasks = new Tasks();
-
+  listId: number;
 
   constructor(
-    private tasksService: TasksService
+    private tasksService: TasksService,
+    private route: ActivatedRoute
   ) { }
 
   ngOnInit() {
   }
 
   addTask() {
+    this.newTask.list_id = this.listId;
     this.tasksService.addTask(this.newTask);
     this.newTask = new Tasks();
   }
@@ -33,19 +38,27 @@ export class TasksComponent implements OnInit {
     this.tasksService.deleteTaskById(task.id);
   }
 
+  getAllTasksByListId(): Tasks[]{
+    this.route.params
+                .subscribe(params => {
+                  this.listId = +params.id;
+               })
+    return this.tasksService.getAllTasksByListId(this.listId);
+  }
+
   markAllDone(){
-    this.tasksService.getAllTasks()
+    this.getAllTasksByListId()
                     .filter(v => !v.complete)
                     .map(v => this.toggleTaskComplete(v));
   }
 
   get tasks() {
-    return this.tasksService.getAllTasks()
+    return this.getAllTasksByListId()
                            .filter(v => !v.complete);
   }
 
   get dones() {
-    return this.tasksService.getAllTasks()
+    return this.getAllTasksByListId()
                            .filter(v => v.complete);
   }
 
