@@ -37,16 +37,18 @@ export class ListsComponent implements OnInit {
     this.getList();
   }
 
-  deleteList(List: List, event: Event) {
+  deleteList(list: List, event: Event) {
     event.stopPropagation();
-    this.ListService.deleteListById(List.id);
+    this.ListService.deleteListById(list.id);
     this.getList();
+    
   }
   
   addList() {
     this.toogleLoading();
-    this.ListService.addList(this.newList)
+    this.ListService.addList(this.newList);
     this.getList();
+    this.newList = new List();
   }
 
   changeToEdit(List: List, event: any) {
