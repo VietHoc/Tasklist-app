@@ -1,50 +1,69 @@
 import { Injectable } from '@angular/core';
+import { Headers, Http, Response } from '@angular/http';
 import { List } from '../models/list.model';
+import 'rxjs/add/operator/toPromise';
 @Injectable()
 export class ListsService {
+  private listsUrl = 'https://radiant-taiga-44344.herokuapp.com/';
+  private headers = new Headers({
+      'Content-Type': 'application/json'
+    });
+  
+  constructor(
+    private http: Http
+  ) { }
 
-  lists: List[] = [
-    { id: 0, title: "Sunday 4/6"},
-    { id: 1, title: "Monday 5/6"},
-    { id: 2, title: "Tuesday 6/6"},
-    { id: 3, title: "Wednesday 7/6"}, 
-  ];
-
+  lists: List[]
+  
   lastId: number = this.lists.length - 1;
 
-  constructor() { }
-
-  // Simulate POST /lists
-  addList(list: List): ListsService {
-    if (!list.id) {
-      list.id = ++this.lastId;
-    }
-    this.lists.push(list);
-    return this;
+  getLists(): Promise<Array<List>>{
+    let indexListUrl = this.listsUrl + "lists.json";
+    return this.http
+               .get(indexListUrl)
+               .toPromise()
+               .then((res) => {
+                 console.log(res.json());
+                 return res.json().lists as List[];
+               })
+               .catch(this.handleError);
   }
 
-  // Simulate DELETE /lists/:id
-  deleteListById(id: number): ListsService {
-    this.lists = this.lists
-      .filter(list => list.id !== id);
-    return this;
+  addList(list: List): Promise<Response> {
+    let addListUrl = this.listsUrl + 'lists';
+    return this.http
+               .post(addListUrl, JSON.stringify(list), { headers: this.headers } )
+               .toPromise()
+               .then(res => {
+                  return res;
+               })
+               .catch(this.handleError);
   }
 
-  getLists(): List[]{
-    return this.lists;
+  deleteListById(id: number): Promise<Response> {
+    let deleteListUrl = this.listsUrl + "lists/" + id;
+    return this.http
+               .delete(deleteListUrl, { headers: this.headers })
+               .toPromise()
+               .catch(this.handleError);
   }
 
   editList(List: List, text: string){
-    this.lists.find(list => list.id === List.id).title = text;
+    const headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+    const url = this.listsUrl + "lists/" + List.id;
+    return this.http
+               .patch(url, JSON.stringify(List), { headers: headers })
+               .toPromise()
+               .then((res) => {
+                 console.log(res);
+                 return List;
+                })
+               .catch(this.handleError);
   }
 
-  // Simulate PUT /lists/:id
-  // updateListById(id: number, values: Object = {}): lists {
-  //   let list = this.getlistById(id);
-  //   if (!list) {
-  //     return null;
-  //   }
-  //   Object.assign(list, values);
-  //   return list;
-  // }
+  private handleError(error: any): Promise<any> {
+    console.log('An error occurred', error);
+    return Promise.reject(error.message || error);
+  }
 }

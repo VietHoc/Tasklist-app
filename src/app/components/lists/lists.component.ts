@@ -24,14 +24,10 @@ export class ListsComponent implements OnInit {
     private ListService: ListsService,
     fb: FormBuilder
   ) {
-    this.form = fb.group({
-      newListTitle: ['',
-        Validators.compose([
-          Validators.required
-        ])
-      ]
-    })
-  }
+      this.form = fb.group({
+        newListTitle: [ '', Validators.compose([ Validators.required ]) ]
+      })
+    }
 
   ngOnInit() {
     this.getList();
@@ -45,7 +41,6 @@ export class ListsComponent implements OnInit {
   }
   
   addList() {
-    this.toogleLoading();
     this.ListService.addList(this.newList);
     this.getList();
     this.newList = new List();
@@ -58,6 +53,7 @@ export class ListsComponent implements OnInit {
 
   editList(text: string, List: List, event: any) {
     event.stopPropagation();
+    List.title = text;
     this.ListService.editList(List, text);
     this.revertEdit();
     this.getList();
@@ -68,16 +64,11 @@ export class ListsComponent implements OnInit {
   }
 
   getList(){
-    this.lists = this.ListService.getLists();
+    this.ListService.getLists();
   }
 
   goTasks(id: number) {
     this.router.navigate(['/lists', id]);
   }
-
-  toogleLoading() {
-    this.loading = !this.loading;
-  }
-
 
 }
