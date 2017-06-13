@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Headers, Http, Response } from '@angular/http';
 import { List } from '../models/list.model';
 import 'rxjs/add/operator/toPromise';
+
 @Injectable()
 export class ListsService {
   private listsUrl = 'https://radiant-taiga-44344.herokuapp.com/';
@@ -14,16 +15,13 @@ export class ListsService {
   ) { }
 
   lists: List[]
-  
-  lastId: number = this.lists.length - 1;
-
+ 
   getLists(): Promise<Array<List>>{
     let indexListUrl = this.listsUrl + "lists.json";
     return this.http
                .get(indexListUrl)
                .toPromise()
                .then((res) => {
-                 console.log(res.json());
                  return res.json().lists as List[];
                })
                .catch(this.handleError);
@@ -62,6 +60,14 @@ export class ListsService {
                .catch(this.handleError);
   }
 
+  // XU LY ... bat dong bo???
+  getTitleById(id: number): string{
+    let tmp: string;
+    this.getLists().then( lists =>{
+      tmp = lists.find(v => v.id===id).title;
+      });
+    return tmp;
+  }
   private handleError(error: any): Promise<any> {
     console.log('An error occurred', error);
     return Promise.reject(error.message || error);

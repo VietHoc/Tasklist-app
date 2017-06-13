@@ -35,15 +35,20 @@ export class ListsComponent implements OnInit {
 
   deleteList(list: List, event: Event) {
     event.stopPropagation();
-    this.ListService.deleteListById(list.id);
-    this.getList();
-    
+    this.ListService
+        .deleteListById(list.id)
+        .then(() => {
+          this.lists = this.lists.filter(l => l.id !== list.id);
+        })
+        .catch(error => this.error = error);
   }
   
   addList() {
-    this.ListService.addList(this.newList);
-    this.getList();
-    this.newList = new List();
+    this.ListService.addList(this.newList)
+        .then(() => {
+                this.getList();
+                this.newList = new List();
+            });
   }
 
   changeToEdit(List: List, event: any) {
@@ -54,17 +59,22 @@ export class ListsComponent implements OnInit {
   editList(text: string, List: List, event: any) {
     event.stopPropagation();
     List.title = text;
-    this.ListService.editList(List, text);
-    this.revertEdit();
-    this.getList();
-  }
-
+    this.ListService.editList(List, text)
+      .then(() => {
+              this.revertEdit();
+              this.getList();
+              });
+  }  
   revertEdit() {
     this.listEditing = -1;
   }
 
   getList(){
-    this.ListService.getLists();
+    this.ListService.getLists()
+              .then(lists => {
+                this.lists = lists;
+              })
+              .catch(error => this.error = error);
   }
 
   goTasks(id: number) {

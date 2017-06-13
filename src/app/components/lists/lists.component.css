@@ -2,6 +2,7 @@ section {
   width: 100%;
   max-width: 600px;
   margin: auto;
+  margin-bottom: 80px;
   margin-top: 80px;
   padding: 30px;
   font-size: 18px;
@@ -37,12 +38,12 @@ form div input{
   height: 36px;
 }
 
-.btn-add-task-list:disabled{
-  background: #dddddd;
-}
-
 .btn-add-task-list:hover{
   background: #0099cc;
+}
+
+.btn-add-task-list:disabled{
+  background: #dddddd;
 }
 
 ul li{

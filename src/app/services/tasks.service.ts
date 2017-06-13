@@ -1,71 +1,70 @@
 import { Injectable } from '@angular/core';
+import { Headers, Http, Response } from '@angular/http';
 import { Tasks } from '../models/tasks.model';
+import 'rxjs/add/operator/toPromise';
+
 @Injectable()
 export class TasksService {
+  private tasksUrl = 'https://radiant-taiga-44344.herokuapp.com/';
+  private headers = new Headers({
+      'Content-Type': 'application/json'
+    });
+  tasks: Tasks[]
+  listTitle: string;
+  constructor(private http: Http) { }
 
-  tasks: Tasks[] = [
-    { list_id: 0, id: 0, title: "Take out the trash", complete: false},
-    { list_id: 0, id: 1, title: "Buy bread", complete: false},
-    { list_id: 0, id: 2, title: "Teach penguins to fly", complete: false},
-    { list_id: 0, id: 3, title: "Go market", complete: true}, 
-    { list_id: 1, id: 4, title: "Take out the trash", complete: false},
-    { list_id: 1, id: 5, title: "Buy bread", complete: false},
-    { list_id: 1, id: 6, title: "Teach penguins to fly", complete: false},
-    { list_id: 2, id: 7, title: "Go market", complete: true}, 
-    { list_id: 2, id: 8, title: "Take out the trash", complete: false},
-    { list_id: 3, id: 9, title: "Buy bread", complete: false},
-    { list_id: 3, id: 10, title: "Teach penguins to fly", complete: false},
-    { list_id: 3, id: 11, title: "Go market", complete: true}, 
-  ];
-
-  lastId: number = this.tasks.length - 1;
-
-  constructor() { }
+  getAllTasksByListId(list_id: number): Promise<Tasks[]> {
+    const getTasksUrl = this.tasksUrl + "lists/" + list_id + ".json";
+    return this.http.get(getTasksUrl)
+                .toPromise()
+                .then(res => {
+                  return res.json().tasks as Tasks[];
+                }) 
+                .catch(this.handleError);
+  }
 
   // Simulate POST /tasks
-  addTask(task: Tasks): TasksService {
-    if (!task.id) {
-      task.id = ++this.lastId;
-    }
-    this.tasks.push(task);
-    return this;
+  addTask(task: Tasks): Promise<Response> {
+    let keys: string = [
+      `title=${task.title}`,
+      `list_id=${task.list_id}`
+    ].join("&");
+    const url = `${this.tasksUrl}tasks?${keys}`;
+    return this.http
+               .post(url, {}, { headers: this.headers })
+               .toPromise()
+               .then(res => {
+                 return res;
+               })
+               .catch(this.handleError);
+  }
+
+  markAllDone(list_id: number): Promise<Response> {
+    const url = this.tasksUrl+'mark_all_done?list_id=' + list_id;
+    return this.http
+               .post(url, {}, { headers: this.headers })
+               .toPromise()
+               .catch(this.handleError);
   }
 
   // Simulate DELETE /tasks/:id
-  deleteTaskById(id: number): TasksService {
-    this.tasks = this.tasks
-      .filter(task => task.id !== id);
-    return this;
+  deleteTaskById(id: number): Promise<Response> {
+    const url = this.tasksUrl + 'tasks/' + id;
+    return this.http.delete(url, {headers: this.headers})
+                    .toPromise()
+                    .catch(this.handleError);
+  }
+  
+  toggleTaskComplete(task: Tasks): Promise<Response> {
+    const url = this.tasksUrl + 'tasks/' + task.id;
+    return this.http
+               .patch(url, JSON.stringify(task.id), { headers: this.headers })
+               .toPromise()
+               .catch(this.handleError);
   }
 
-  // Simulate PUT /tasks/:id
-  updateTaskById(id: number, values: Object = {}): Tasks {
-    let task = this.getTaskById(id);
-    if (!task) {
-      return null;
-    }
-    Object.assign(task, values);
-    return task;
-  }
-
-  // Simulate GET /tasks
-  getAllTasksByListId(list_id: number): Tasks[] {
-    return this.tasks
-                  .filter(task => task.list_id === list_id);
-  }
-
-  // Simulate GET /tasks/:id
-  getTaskById(id: number): Tasks {
-    return this.tasks
-      .filter(task => task.id === id)
-      .pop();
-  }
-
-  // Toggle task complete
-  toggleTaskComplete(task: Tasks){
-    let updatedTask = this.updateTaskById(task.id, {
-      complete: !task.complete
-    });
-    return updatedTask;
+  private handleError(error: any): Promise<any> {
+    console.error('An error occurred', error);
+    return Promise.reject(error.message || error);
   }
 }
