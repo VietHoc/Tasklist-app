@@ -1,15 +1,17 @@
-<section>
-  <form [formGroup]="form" (ngSubmit)="addList()">
+<div class="container"> 
+   <div id="myDIV" class="header">
+    <h2>My Task List</h2>
+    <form [formGroup]="form" (ngSubmit)="addList()">
     <div>
       <input 
-        type="text" placeholder="Create a list tasks..."
+        type="text" placeholder="Create a tasks..."
         formControlName="newListTitle"
         [(ngModel)]="newList.title">
-      <button [disabled]="form.invalid" class="btn-add-task-list">Add List</button>
+      <button [disabled]="form.invalid" class="btn-add-task-list">Add Task</button>
     </div>
   </form>
-
-  <ul>
+  </div>
+  <ul id="myUL">
     <li *ngFor="let list of lists" >
       <div class="view" *ngIf="list.id != listEditing" (click)="goTasks(list.id)">
         <label>{{list.title}}</label>
@@ -25,10 +27,9 @@
         (keyup.escape)="revertEdit()" 
         value={{list.title}}>
     </li>
-  </ul>
-</section>
-
-<ng-template #loading_template>
-  <i class="fa fa-circle-o-notch fa-spin fa-3x fa-fw"></i>
-  <span class="sr-only">Loading...</span>
-</ng-template>
+  </ul>   
+  <ng-template #loading_template>
+    <i class="fa fa-circle-o-notch fa-spin fa-2x fa-fw"></i>
+    <span class="sr-only">Loading...</span>
+  </ng-template>
+</div>

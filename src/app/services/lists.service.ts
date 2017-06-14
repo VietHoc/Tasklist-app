@@ -5,7 +5,7 @@ import 'rxjs/add/operator/toPromise';
 
 @Injectable()
 export class ListsService {
-  private listsUrl = 'https://radiant-taiga-44344.herokuapp.com/';
+  private listsUrl = 'https://agile-castle-31650.herokuapp.com/';
   private headers = new Headers({
       'Content-Type': 'application/json'
     });

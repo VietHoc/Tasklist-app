@@ -73,6 +73,7 @@ export class ListsComponent implements OnInit {
     this.ListService.getLists()
               .then(lists => {
                 this.lists = lists;
+                console.log(this.lists)
               })
               .catch(error => this.error = error);
   }

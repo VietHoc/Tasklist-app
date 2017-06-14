@@ -17,8 +17,8 @@ import { TasksComponent } from './components/tasks/tasks.component';
 import { ListsComponent } from './components/lists/lists.component';
 
 const routes: Routes = [
-    { path: '', redirectTo: '/lists', pathMatch: 'full'},
-    { path: 'lists',    component: ListsComponent },
+    { path: '', redirectTo: '/tasks', pathMatch: 'full'},
+    { path: 'tasks',    component: ListsComponent },
     { path: 'lists/:id', component: TasksComponent }
 ];
 

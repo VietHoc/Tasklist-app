@@ -5,7 +5,7 @@ import 'rxjs/add/operator/toPromise';
 
 @Injectable()
 export class TasksService {
-  private tasksUrl = 'https://radiant-taiga-44344.herokuapp.com/';
+  private tasksUrl = 'https://agile-castle-31650.herokuapp.com/';
   private headers = new Headers({
       'Content-Type': 'application/json'
     });
