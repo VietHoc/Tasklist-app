@@ -4,7 +4,7 @@
     <form [formGroup]="form" (ngSubmit)="addList()">
     <div>
       <input 
-        type="text" placeholder="Create a tasks..."
+        type="text" placeholder="Create a tasks list..."
         formControlName="newListTitle"
         [(ngModel)]="newList.title">
       <button [disabled]="form.invalid" class="btn-add-task-list">Add Task</button>
