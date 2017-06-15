@@ -1,4 +1,36 @@
-<div class="container"> 
+<div class="container " id="nen">
+  <div class="col-lg-6 col-md-6">
+    <form [formGroup]="formSearch" class="ui form col-md-12">
+      <div class="field">
+        <h3 for="search">Search Todo</h3>
+        <input 
+          class="prompt" 
+          type="text" 
+          id="search"
+          placeholder="Search..."
+          formControlName="search">
+      </div>
+    </form>
+    <div *ngIf="(loading$ | async)" class="col-md-12">
+      <div class="spinner">
+        <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+        <span class="sr-only">Loading...</span>
+      </div>
+    </div>
+
+    <div class="results">
+      <ul class="list-group">
+        <h4>{{ header }}</h4>
+        <button *ngFor="let result of this.results" 
+        class="list-group-item" (click)="goToTask(result.list.list_id)">
+          <h4>{{ result.title }}</h4>
+          <p>in task:  {{ result.list.list_title }} </p>
+        </button>
+      </ul>
+    </div>
+</div>
+
+<div class="container col-lg-6 col-md-6"> 
    <div id="myDIV" class="header">
     <h2>My Task List</h2>
     <form [formGroup]="form" (ngSubmit)="addList()">
@@ -32,4 +64,6 @@
     <i class="fa fa-circle-o-notch fa-spin fa-2x fa-fw"></i>
     <span class="sr-only">Loading...</span>
   </ng-template>
+</div>
+
 </div>

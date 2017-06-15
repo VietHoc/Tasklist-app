@@ -5,7 +5,7 @@ import 'rxjs/add/operator/toPromise';
 
 @Injectable()
 export class ListsService {
-  private listsUrl = 'https://agile-castle-31650.herokuapp.com/';
+  private listsUrl = 'http://localhost:3000/';
   private headers = new Headers({
       'Content-Type': 'application/json'
     });
@@ -15,7 +15,19 @@ export class ListsService {
   ) { }
 
   lists: List[]
- 
+  
+  search(query: string): Promise<any> {
+    const url = `${this.listsUrl}searchs.json?query=${query}`;
+    return this.http 
+               .get(url)
+               .toPromise()
+               .then(res => {
+                 console.log(res.json());
+                 return res.json();
+               })
+               .catch(this.handleError);
+  }
+
   getLists(): Promise<Array<List>>{
     let indexListUrl = this.listsUrl + "lists.json";
     return this.http
